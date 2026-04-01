@@ -1,0 +1,86 @@
+/* Container */
+.ctable {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 20px;
+  font-family: 'Segoe UI', sans-serif;
+  background: #ffffff;
+  border-radius: 12px;
+  overflow: hidden;
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+}
+
+/* Header */
+.ctable thead {
+  background: linear-gradient(135deg, #667eea, #764ba2);
+  color: #fff;
+}
+
+.ctable th {
+  padding: 14px;
+  text-align: left;
+  font-size: 14px;
+  letter-spacing: 0.5px;
+}
+
+/* Body */
+.ctable td {
+  padding: 12px 14px;
+  font-size: 14px;
+  color: #333;
+  border-bottom: 1px solid #eee;
+}
+
+/* Row hover effect */
+.ctable tbody tr {
+  transition: all 0.3s ease;
+}
+
+.ctable tbody tr:hover {
+  background-color: #f5f7ff;
+  transform: scale(1.01);
+  cursor: pointer;
+}
+
+/* Alternate row color */
+.ctable tbody tr:nth-child(even) {
+  background-color: #fafafa;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .ctable thead {
+    display: none;
+  }
+
+  .ctable, 
+  .ctable tbody, 
+  .ctable tr, 
+  .ctable td {
+    display: block;
+    width: 100%;
+  }
+
+  .ctable tr {
+    margin-bottom: 15px;
+    background: #fff;
+    border-radius: 10px;
+    padding: 10px;
+  }
+
+  .ctable td {
+    text-align: right;
+    padding-left: 50%;
+    position: relative;
+  }
+
+  .ctable td::before {
+    content: attr(data-label);
+    position: absolute;
+    left: 15px;
+    top: 12px;
+    font-weight: bold;
+    text-align: left;
+    color: #666;
+  }
+}

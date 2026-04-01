@@ -1,0 +1,58 @@
+<!-- Premium Navbar -->
+<nav class="navbar navbar-expand-lg navbar-dark fixed-top custom-navbar">
+  <div class="container">
+    <a class="navbar-brand fw-bold" routerLink="/">🚀 MyApp</a>
+
+    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarContent">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+
+    <div class="collapse navbar-collapse" id="navbarContent">
+      <ul class="navbar-nav ms-auto align-items-center">
+        
+        <li class="nav-item">
+          <a class="nav-link" routerLink="/login" routerLinkActive="active">Login</a>
+        </li>
+
+        <li class="nav-item">
+          <a class="nav-link" routerLink="/about" routerLinkActive="active">About</a>
+        </li>
+
+        <li class="nav-item">
+          <a class="nav-link" routerLink="/dashboard" routerLinkActive="active">Dashboard</a>
+        </li>
+
+        <!-- Dropdown -->
+        <li class="nav-item dropdown">
+          <a class="nav-link dropdown-toggle" routerLink="/help" id="helpDropdown" role="button" data-toggle="dropdown">
+            Help
+          </a>
+          <!-- <div class="dropdown-menu dropdown-menu-end">
+            <a class="dropdown-item" routerLink="/help">FAQ</a>
+            <a class="dropdown-item" routerLink="/help">Contact</a>
+            <div class="dropdown-divider"></div>
+            <a class="dropdown-item" routerLink="/help">Live Chat</a>
+          </div> -->
+        </li>
+
+        <!-- CTA Button -->
+        <li class="nav-item ms-3" >
+          <a class="btn signup-btn" routerLink="/register">Signup</a>
+        </li>
+
+      <li class="nav-item ms-3 d-flex align-items-center" *ngIf="!isLoggedIn">
+        <span class="me-2 text-white" *ngIf="loggedInEmail">{{ loggedInEmail }}</span>
+        <button class="logout-btn" type="button" (click)="logout()">Logout</button>
+      </li>
+    
+ 
+
+      </ul>
+    </div>
+  </div>
+</nav>
+
+
+<div class="main-content">
+  <router-outlet></router-outlet>
+</div>

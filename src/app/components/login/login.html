@@ -1,0 +1,39 @@
+<div class="auth-shell">
+  <div class="auth-card">
+    <div class="brand">
+      <div class="brand-mark">MyApp</div>
+      <div class="brand-title" >Login</div>
+    </div>
+
+    <form class="form" (ngSubmit)="onSubmit()" #loginForm="ngForm">
+      <label class="label">
+        Email
+        <input class="input" name="email" type="email" required [(ngModel)]="email" autocomplete="email" />
+      </label>
+
+      <label class="label">
+        Password
+        <input
+          class="input"
+          name="password"
+          type="password"
+          required
+          [(ngModel)]="password"
+          autocomplete="current-password"
+        />
+      </label>
+
+      <button class="btn" type="submit" [disabled]="submitting || !loginForm.form.valid">
+        {{ submitting ? 'Logging in...' : 'Login' }}
+      </button>
+
+      <div class="links">
+        <button type="button" class="link-btn" (click)="goToRegister()">Create account</button>
+      </div>
+
+      <div class="message" *ngIf="errorMessage">
+        {{ errorMessage }}
+      </div>
+    </form>
+  </div>
+</div>

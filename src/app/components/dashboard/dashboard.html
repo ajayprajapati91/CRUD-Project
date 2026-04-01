@@ -1,0 +1,159 @@
+<div class="dash-shell">
+<header class="topbar">
+  <div class="brand">
+    <div class="brand-mark">My App</div>
+    <div class="brand-text">Dashboard</div>
+  </div>
+
+  <div class="top-actions">
+    <div class="user-email" *ngIf="loggedInEmail" routerLink="/dashboard/profile">{{ loggedInEmail }}</div>
+    <button class="profile-btn" type="button" (click)="getById()"> 👤 Profile</button>
+    <button class="logout-btn" type="button" (click)="logout()">Logout</button>
+  </div>
+</header>
+
+<div class="dash-body">
+  <aside class="sidebar">
+    <div class="side-section">
+      <button class="side-btn" type="button" (click)="getAll()" [class.side-btn-active]="viewMode === 'all'">
+        Get All
+      </button>
+    </div>
+
+    <div class="side-section">
+      <div class="side-label">Get By Id</div>
+      <div class="side-input-row">
+        <input class="side-input" type="number" min="1" placeholder="Enter id" [(ngModel)]="idInput" name="idInput" />
+        <button class="side-btn side-btn-small" type="button" (click)="getById()">Get</button>
+      </div>
+    </div>
+
+    <div class="side-section">
+      <button class="side-btn danger" type="button" (click)="deleteAll()">Delete All</button>
+    </div>
+
+    <div class="side-footer">
+      <div class="side-hint" *ngIf="viewMode">
+        Showing {{ viewMode === 'all' ? 'all records' : ('record id ' + activeId) }}
+      </div>
+      <div class="side-hint" *ngIf="!viewMode">Use sidebar buttons to load data.</div>
+    </div>
+  </aside>
+
+  <main class="content">
+    <section class="panel">
+      <div class="panel-header">
+        <div class="panel-title">Saved Registrations</div>
+        <div class="panel-subtitle" *ngIf="records.length">Total: {{ records.length }}</div>
+      </div>
+
+      <div class="ctable-wrap" *ngIf="records.length; else emptyState">
+        <table class="ctable">
+          <thead>
+            <tr>
+              <th class="col-id">ID</th>
+              <th class="col-name">Name</th>
+              <th class="col-email">Email</th>
+              <th class="col-phone">Phone</th>
+              <th class="col-gender">Gender</th>
+              <th class="col-city">City</th>
+              <th class="col-actions">Actions</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let user of records ;index as i" (click)='profileDetails(user.id)'>
+              <td>{{ user.id }}</td>
+              <td>{{ user.fullName }}</td>
+              <td>{{ user.email }}</td>
+              <td>{{ user.phone }}</td>
+              <td>{{ user.gender }}</td>
+              <td>{{ user.city }}</td>
+              <td>
+                <button class="action-btn" type="button" (click)="openUpdate(user)">Update</button>
+                <button class="action-btn danger" type="button" (click)="openDelete(user)">Delete</button>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <ng-template #emptyState>
+        <div class="empty">
+          <div class="empty-title">No data loaded</div>
+          <div class="empty-sub">Click <b>Get All</b> or <b>Get By Id</b> from the sidebar.</div>
+        </div>
+      </ng-template>
+    </section>
+  </main>
+</div>
+
+<div class="cmodal-backdrop" *ngIf="showUpdateModal" (click)="cancelUpdate()">
+  <div class="cmodal" (click)="$event.stopPropagation()">
+    <div class="cmodal-header">
+      Update Record
+      <div class="cmodal-id" *ngIf="updateTarget as ut">ID: {{ ut.id }}</div>
+    </div>
+
+    <form class="cmodal-body" (ngSubmit)="saveUpdate()" #updateForm="ngForm">
+      <label class="modal-label">
+        Full Name
+        <input class="modal-input" name="uFullName" type="text" required [(ngModel)]="updateDraft.fullName" />
+      </label>
+
+      <label class="modal-label">
+        Email
+        <input class="modal-input" name="uEmail" type="email" required [(ngModel)]="updateDraft.email" />
+      </label>
+
+      <label class="modal-label">
+        Phone
+        <input class="modal-input" name="uPhone" type="tel" required [(ngModel)]="updateDraft.phone" />
+      </label>
+
+      <label class="modal-label">
+        Gender
+        <select class="modal-input" name="uGender" required [(ngModel)]="updateDraft.gender">
+          <option value="Male">Male</option>
+          <option value="Female">Female</option>
+          <option value="Other">Other</option>
+        </select>
+      </label>
+
+      <label class="modal-label">
+        City
+        <select class="modal-input" name="uCity" required [(ngModel)]="updateDraft.city">
+          <option *ngFor="let cityName of cityOptions" [value]="cityName">{{ cityName }}</option>
+        </select>
+      </label>
+
+      <label class="modal-label">
+        Password
+        <input class="modal-input" name="uPassword" type="password" placeholder="Leave blank to keep current"
+          [(ngModel)]="updateDraft.password" />
+      </label>
+
+      <div class="modal-actions">
+        <button class="btn primary" type="submit" [disabled]="!updateForm.form.valid">Save</button>
+        <button class="btn ghost" type="button" (click)="cancelUpdate()">Cancel</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<div class="cmodal-backdrop" *ngIf="showDeleteModal" (click)="cancelDelete()">
+  <div class="modal small" (click)="$event.stopPropagation()">
+    <div class="cmodal-header">Confirm Delete</div>
+    <div class="cmodal-body">
+      <div class="confirm-text">Delete record <b>ID: {{ deleteTarget?.id }}</b>? This cannot be undone.</div>
+      <div class="modal-actions">
+        <button class="cbtn danger" type="button" (click)="confirmDelete()">Delete</button>
+        <button class="cbtn ghost" type="button" (click)="cancelDelete()">Cancel</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="toast" *ngIf="toastText" [class.toast-success]="toastKind === 'success'"
+  [class.toast-error]="toastKind === 'error'">
+  {{ toastText }}
+</div>

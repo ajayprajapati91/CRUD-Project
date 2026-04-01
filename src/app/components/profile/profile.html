@@ -1,0 +1,26 @@
+<p>profile works!</p>
+
+        <table class="ctable">
+          <thead>
+            <tr>
+              <th class="col-id">ID</th>
+              <th class="col-name">Name</th>
+              <th class="col-email">Email</th>
+              <th class="col-phone">Phone</th>
+              <th class="col-gender">Gender</th>
+              <th class="col-city">City</th>
+             
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngIf="user && user.id">
+              <td>{{ user.id }}</td>
+              <td>{{ user.fullName }}</td>
+              <td>{{ user.email }}</td>
+              <td>{{ user.phone }}</td>
+              <td>{{ user.gender }}</td>
+              <td>{{ user.city }}</td>
+             
+            </tr>
+          </tbody>
+        </table>
