@@ -13,7 +13,11 @@ import { Help } from './components/help/help';
 import { Home } from './components/home/home';
 import { ErrorPage } from './components/error-page/error-page';
 import { Profile } from './components/profile/profile';
-import { provideHttpClient } from '@angular/common/http';
+import { provideHttpClient, withInterceptors } from '@angular/common/http';
+import { HTTP_INTERCEPTORS } from '@angular/common/http';
+import { Authintercepter } from './services/authintercepter';
+import { authInterceptorInterceptor } from './myInterceptors/auth-interceptor-interceptor';
+// import { jwtDecode } from 'jwt-decode';
 
 @NgModule({
   declarations: [
@@ -33,8 +37,9 @@ import { provideHttpClient } from '@angular/common/http';
     FormsModule,
     ReactiveFormsModule,
     Profile,
+    
   ],
-  providers: [provideHttpClient()],
+  providers: [provideHttpClient(withInterceptors([authInterceptorInterceptor]))],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

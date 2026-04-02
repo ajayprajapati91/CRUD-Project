@@ -6,7 +6,7 @@
   </div>
 
   <div class="top-actions">
-    <div class="user-email" *ngIf="loggedInEmail" routerLink="/dashboard/profile">{{ loggedInEmail }}</div>
+    <!-- <div class="user-email" *ngIf="getToken" routerLink="/dashboard/profile">{{ loggedInEmail }}</div> -->
     <button class="profile-btn" type="button" (click)="getById()"> 👤 Profile</button>
     <button class="logout-btn" type="button" (click)="logout()">Logout</button>
   </div>

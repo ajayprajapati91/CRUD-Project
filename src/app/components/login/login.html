@@ -2,38 +2,63 @@
   <div class="auth-card">
     <div class="brand">
       <div class="brand-mark">MyApp</div>
-      <div class="brand-title" >Login</div>
+      <div class="brand-title">Login</div>
     </div>
 
-    <form class="form" (ngSubmit)="onSubmit()" #loginForm="ngForm">
+    <form class="form" [formGroup]="myForm" (ngSubmit)="onSubmit()">
+
       <label class="label">
         Email
-        <input class="input" name="email" type="email" required [(ngModel)]="email" autocomplete="email" />
+        <input
+          class="input"
+          type="email"
+          formControlName="email"
+          autocomplete="email"
+        />
       </label>
+      
+      <div class="error" *ngIf="formControl.email.touched && formControl.email.invalid">
+        <small *ngIf="formControl.email.errors?.['required']">
+          Email is required
+        </small>
+        <small *ngIf="formControl.email.errors?.['email']">
+          Invalid email format
+        </small>
+      </div>
 
       <label class="label">
         Password
         <input
           class="input"
-          name="password"
           type="password"
-          required
-          [(ngModel)]="password"
+          formControlName="password"
           autocomplete="current-password"
         />
       </label>
 
-      <button class="btn" type="submit" [disabled]="submitting || !loginForm.form.valid">
+      <!-- ✅ Validation Message -->
+      <div class="error" *ngIf="formControl.password.touched && formControl.password.invalid">
+        <small>Password is required</small>
+      </div>
+
+      <button
+        class="btn"
+        type="submit"
+        [disabled]="submitting || myForm.invalid"
+      >
         {{ submitting ? 'Logging in...' : 'Login' }}
       </button>
 
       <div class="links">
-        <button type="button" class="link-btn" (click)="goToRegister()">Create account</button>
+        <button type="button" class="link-btn" (click)="goToRegister()">
+          Create account
+        </button>
       </div>
 
       <div class="message" *ngIf="errorMessage">
         {{ errorMessage }}
       </div>
+
     </form>
   </div>
 </div>

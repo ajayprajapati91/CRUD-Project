@@ -1,6 +1,9 @@
-import { Injectable } from '@angular/core';
+import { inject, Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
+import { StorageServices } from './storage.services';
+import { FormBuilder } from '@angular/forms';
+import { Router } from 'express';
 
 export interface CreateUserDto {
   fullName: string;
@@ -9,6 +12,7 @@ export interface CreateUserDto {
   gender: 'Male' | 'Female' | 'Other';
   city: string;
   password: string;
+  role:string;
 }
 
 export interface UpdateUserDto {
@@ -18,6 +22,7 @@ export interface UpdateUserDto {
   gender?: 'Male' | 'Female' | 'Other';
   city?: string;
   password?: string;
+  role?:string;
 }
 
 @Injectable({
@@ -25,6 +30,9 @@ export interface UpdateUserDto {
 })
 export class UserCrudService {
   private baseUrl = 'http://localhost:5050/v1/auth';
+
+  myStorageService=inject(StorageServices)
+
 
   constructor(private http: HttpClient) {}
 
@@ -36,9 +44,28 @@ export class UserCrudService {
   });
   } 
 
-  login(email: string, password: string): Observable<any> {
-    return this.http.post(`${this.baseUrl}/login`, { email, password });
+  login(credentials:any): Observable<any> {
+    return this.http.post(`${this.baseUrl}/login`, credentials);
   }
+
+  // login(email: string, password: string): Observable<any> {
+  //   return this.http.post(`${this.baseUrl}/login`, { email, password });
+  // }
+
+  isLoggedIn(){
+    let token= this.myStorageService.getItem('authToken')
+    if(token) 
+      return true
+    return false
+  }
+
+  // getDashboardData(){
+  //   return this.http.get(this.baseUrl+'/dashboard')
+  // }
+
+   // login(credentials:any):Observable<any>{
+  //   return this.http.post(`${this.baseUrl}/login`,credentials);
+  // }
 
   getAll(): Observable<any[]> {
     return this.http.get<any[]>(`${this.baseUrl}/all`);

@@ -5,6 +5,7 @@ export interface CrudUser {
   phone: string;
   gender: 'Male' | 'Female' | 'Other';
   city: string;
+  role:string;
   password: string;
   createdAt: string; 
 }
@@ -16,5 +17,6 @@ export interface CrudUserPublic {
   phone: string;
   gender: 'Male' | 'Female' | 'Other';
   city: string;
+  role:string;
 }
 

@@ -69,6 +69,24 @@
     </div>
   </div>
 
+
+   <!-- Role -->
+   <div class="form-group">
+    <label class="form-label" for="role">Role</label>
+    <select class="input" formControlName="role">
+      <option value="" disabled selected>Select role</option>
+      <option *ngFor="let role of roleOptions" [value]="role">
+        {{ role }}
+      </option>
+    </select>
+
+    <div class="alert alert-danger"
+      *ngIf="formControl['role'].invalid && (formControl['role'].dirty || formControl['role'].touched)">
+      Please select role.
+    </div>
+  </div>
+
+
       <div class="form-group">
     <label class="form-label" for="password">Password</label>
     <input class="input" type="password" formControlName="password" placeholder="Enter Password"

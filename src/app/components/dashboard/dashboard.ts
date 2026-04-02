@@ -3,6 +3,7 @@ import { AuthService } from '../../services/auth.service';
 import { CrudUser } from '../../models/crud-user.model';
 import { UpdateUserDto, UserCrudService } from '../../services/user-crud.service';
 import { Router } from '@angular/router';
+import { StorageServices } from '../../services/storage.services';
 
 type ToastKind = 'success' | 'error';
 
@@ -22,7 +23,7 @@ export class DashboardComponent implements OnInit {
 
   idInput: number | null = null;
 
-  loggedInEmail: string | null = null;
+  Token: string | null = null;
 
   showUpdateModal = false;
   updateTarget: CrudUser | null = null;
@@ -49,6 +50,8 @@ export class DashboardComponent implements OnInit {
   toastText = '';
   toastKind: ToastKind = 'success';
   private toastTimer: number | undefined;
+  myStorage=inject(StorageServices)
+  
 
   constructor(
     private readonly userCrud: UserCrudService,
@@ -56,11 +59,14 @@ export class DashboardComponent implements OnInit {
   ) {}
 
   ngOnInit(): void {
-    this.loggedInEmail = this.auth.getLoggedInEmail();
+    this.Token = this.auth.getToken();
   }
 
   logout(): void {
-    this.auth.logout();
+    this.myStorage.removeItem('authToken')
+    alert("You have successfully logout")
+    this.myRoute.navigate(['/login'])
+    // this.auth.logout();
   }
 
   private showToast(message: string, kind: ToastKind): void {
@@ -75,6 +81,7 @@ export class DashboardComponent implements OnInit {
   getAll(): void {
     this.userCrud.getAll().subscribe({
       next: (users) => {
+        console.log(users)
         this.records = users;
         this.viewMode = 'all';
         this.activeId = '';

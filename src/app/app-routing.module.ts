@@ -1,6 +1,6 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
-import { AuthGuard } from './guards/auth.guard';
+// import { AuthGuard } from './guards/auth.guard';
 import { DashboardComponent } from './components/dashboard/dashboard';
 import { LoginComponent } from './components/login/login';
 import { RegisterComponent } from './components/register/register';
@@ -9,6 +9,7 @@ import { Help } from './components/help/help';
 import { Home } from './components/home/home';
 import { ErrorPage } from './components/error-page/error-page';
 import { Profile } from './components/profile/profile';
+import { authguardGuard } from './guards/authguard-guard';
 
 
 const routes: Routes = [
@@ -29,13 +30,14 @@ const routes: Routes = [
   {
     path: 'dashboard',
     component: DashboardComponent,
-    canActivate: [AuthGuard],
-    children:[
-      {
-        path: 'profile',
-        component:Profile
-      }
-    ]
+    canActivate: [authguardGuard],
+    data: { role: 'ADMIN'}
+    // children:[
+    //   {
+    //     path: 'profile',
+    //     component:Profile
+    //   }
+    // ]
   },
  
   // { path: 'dashboard', component: DashboardComponent },

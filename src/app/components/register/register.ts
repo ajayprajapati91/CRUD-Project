@@ -23,6 +23,7 @@ export class RegisterComponent {
     phone:new FormControl('',Validators.required),
     gender:new FormControl('',Validators.required),
     city:new FormControl('',Validators.required),
+    role:new FormControl('',Validators.required),
     password:new FormControl('',Validators.required),
     confirmPassword:new FormControl('',Validators.required)
     });
@@ -40,6 +41,8 @@ export class RegisterComponent {
   password = '';
   confirmPassword = '';
   cityOptions: string[] = ['Delhi', 'Mumbai', 'Bengaluru', 'Pune', 'Hyderabad', 'Chennai', 'Kolkata'];
+  role='';
+  roleOptions:string[] =['ADMIN','DONOR','HOSPITAL','DONATION'];
 
   errorMessage = '';
   successMessage = '';
@@ -55,13 +58,14 @@ export class RegisterComponent {
   onSubmit(): void {
   console.log(this.myForm.value);
   console.log(this.myForm.valid);
-
+  
   this.errorMessage = '';
   this.successMessage = '';
 
   // Read directly from the form
   const gender = this.myForm.get('gender')?.value;
   const city = this.myForm.get('city')?.value;
+  const role = this.myForm.get('role')?.value;
   const password = this.myForm.get('password')?.value;
   const confirmPassword = this.myForm.get('confirmPassword')?.value;
 
@@ -83,6 +87,7 @@ export class RegisterComponent {
       phone: this.myForm.get('phone')?.value.trim(),
       gender: gender,
       city: city,
+      role:role,
       password: password,
     })
     .subscribe({
@@ -97,6 +102,7 @@ export class RegisterComponent {
         this.submitting = false;
         this.successMessage = 'Registration successful. Please login.';
         this.router.navigate(['/login']);
+        console.log("registerd")
       },
       error: (err: unknown) => {
         this.submitting = false;
