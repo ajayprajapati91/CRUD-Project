@@ -17,6 +17,9 @@ import { provideHttpClient, withInterceptors } from '@angular/common/http';
 import { HTTP_INTERCEPTORS } from '@angular/common/http';
 import { Authintercepter } from './services/authintercepter';
 import { authInterceptorInterceptor } from './myInterceptors/auth-interceptor-interceptor';
+import { Donor } from './components/donor/donor';
+import { Hospital } from './components/hospital/hospital';
+import { Navbar } from './components/navbar/navbar';
 // import { jwtDecode } from 'jwt-decode';
 
 @NgModule({
@@ -29,6 +32,9 @@ import { authInterceptorInterceptor } from './myInterceptors/auth-interceptor-in
     Help,
     Home,
     ErrorPage,
+    Donor,
+    Hospital,
+    Navbar,
     
   ],
   imports: [

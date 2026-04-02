@@ -1,8 +1,8 @@
 <div class="dash-shell">
 <header class="topbar">
   <div class="brand">
-    <div class="brand-mark">My App</div>
-    <div class="brand-text">Dashboard</div>
+    <div class="brand-mark">🩸</div>
+    <div class="brand-text">Admin Dashboard</div>
   </div>
 
   <div class="top-actions">
@@ -69,8 +69,8 @@
               <td>{{ user.gender }}</td>
               <td>{{ user.city }}</td>
               <td>
-                <button class="action-btn" type="button" (click)="openUpdate(user)">Update</button>
-                <button class="action-btn danger" type="button" (click)="openDelete(user)">Delete</button>
+                <button class="action-btn" type="button" (click)="openUpdate(user); $event.stopPropagation()">Update</button>
+                <button class="action-btn danger" type="button" (click)="openDelete(user); $event.stopPropagation()">Delete</button>
               </td>
             </tr>
           </tbody>
