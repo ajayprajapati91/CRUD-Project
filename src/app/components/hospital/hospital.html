@@ -1,1 +1,68 @@
-<p>hospital works!</p>
+<div class="hospital-dashboard">
+
+  <header class="dashboard-header">
+    <div class="logo">MyApp Hospital</div>
+    <div class="user-info">
+      <span>Welcome, Hospital</span>
+      <button class="btn logout" (click)="logout()">Logout</button>
+    </div>
+  </header>
+
+  <aside class="sidebar">
+    <nav>
+      <ul>
+        <li><a routerLink="/hospital/profile">Profile</a></li>
+        <li><a routerLink="/hospital/requests">Donation Requests</a></li>
+        <li><a routerLink="/hospital/patients">Patients</a></li>
+        <li><a routerLink="/hospital/history">Request History</a></li>
+        <li><a routerLink="/hospital/help">Help</a></li>
+      </ul>
+    </nav>
+  </aside>
+
+  <main class="main-content">
+    <div class="cards">
+      <div class="card">
+        <h3>Total Patients</h3>
+        <p>120</p>
+      </div>
+      <div class="card">
+        <h3>Pending Requests</h3>
+        <p>8</p>
+      </div>
+      <div class="card">
+        <h3>Completed Donations</h3>
+        <p>75</p>
+      </div>
+    </div>
+
+    <section class="recent-activity">
+      <h2>Recent Donation Requests</h2>
+      <table>
+        <thead>
+          <tr>
+            <th>Date</th>
+            <th>Patient</th>
+            <th>Blood Type</th>
+            <th>Status</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>2026-03-30</td>
+            <td>John Doe</td>
+            <td>O+</td>
+            <td>Approved</td>
+          </tr>
+          <tr>
+            <td>2026-03-28</td>
+            <td>Jane Smith</td>
+            <td>A-</td>
+            <td>Pending</td>
+          </tr>
+        </tbody>
+      </table>
+    </section>
+  </main>
+
+</div>

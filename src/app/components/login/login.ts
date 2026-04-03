@@ -51,21 +51,136 @@ export class LoginComponent implements OnInit{
     this.router.navigate(['/register']);
   }
 
+  onSubmit() {
+  if (this.myForm.invalid) return;
 
+  const user = {
+    email: this.myForm.value.email,
+    password: this.myForm.value.password,
+  };
 
-onSubmit() {
-  // if (this.myForm.invalid) return;
-  // const { email, password } = this.myForm.value;
-
-  this.myApiService.login(this.myForm.value).subscribe({
+  this.myApiService.login(user).subscribe({
     next: (res: any) => {
-      console.log("Login success", res);
-      this.myLocalStorage.setItem('authToken',('Bearer '+res.token))
-      this.router.navigate(['/dashboard']);
+      if (res && res.token) {
+        // Store token
+        this.myLocalStorage.setItem('authToken', 'Bearer ' + res.token);
+
+        // Decode JWT to get role
+        let payload;
+        try {
+          payload = JSON.parse(atob(res.token.split('.')[1]));
+        } catch (e) {
+          console.error('Failed to decode token', e);
+          alert('Login failed: Invalid token');
+          return;
+        }
+
+        // Get the first role from roles array
+        const role = payload.roles && payload.roles.length > 0 
+          ? payload.roles[0].replace('ROLE_', '').toUpperCase() 
+          : 'UNKNOWN';
+
+        this.myLocalStorage.setItem('userRole', role);
+        console.log('Logged in as role:', role);
+
+          // Get expiration
+        const expUnix = payload.exp; // exp is usually in seconds
+        const expDate = new Date(expUnix * 1000); // convert to milliseconds
+        console.log('Token expires at:', expDate.toLocaleString());
+
+
+        // Redirect based on role
+        switch (role) {
+          case 'ADMIN':
+            this.router.navigate(['/dashboard']);
+            break;
+          case 'DONOR':
+            this.router.navigate(['/donor']);
+            break;
+          case 'HOSPITAL':
+            this.router.navigate(['/hospital']);
+            break;
+          default:
+            this.router.navigate(['/home']);
+        }
+      } else {
+        alert('Login failed: Invalid response from server');
+      }
     },
     error: (err) => {
       console.error(err);
-      alert('Login failed');
+      alert('Login failed: Server error or invalid credentials');
+    },
+  });
+}
+
+
+// onSubmit() {
+//   // if (this.myForm.invalid) return;
+//   // const { email, password } = this.myForm.value;
+
+//   this.myApiService.login(this.myForm.value).subscribe({
+//   next: (res: any) => {
+//     if (res && res.token && res.role) {
+//       // Store token and role
+//       this.myLocalStorage.setItem('authToken', 'Bearer ' + res.token);
+//       this.myLocalStorage.setItem('userRole', res.role);
+
+//       // Redirect based on role
+//       const role = res.role?.toUpperCase();
+//       switch(res.role) {
+//         case 'ADMIN':
+//           this.router.navigate(['/dashboard']);
+//           break;
+//         case 'HOSPITAL':
+//           this.router.navigate(['/hospital']);
+//           break;
+//         case 'DONOR':
+//           this.router.navigate(['/donor']);
+//           break;
+//         default:
+//           this.router.navigate(['/home']);
+//       }
+//     } else {
+//       alert('Login failed: Invalid response from server');
+//     }
+//   },
+//   error: (err) => {
+//     console.error(err);
+//     alert('Login failed');
+//   }
+// });
+// }
+showForgotModal = false;
+
+forgotData = {
+  email: '',
+  password: ''
+};
+openForgotModal() {
+  this.showForgotModal = true;
+  console.log("Forgot modal opened");
+}
+
+closeForgotModal() {
+  this.showForgotModal = false;
+}
+
+submitForgotPassword() {
+  console.log("forgot")
+  if (!this.forgotData.email || !this.forgotData.password) {
+    alert("Please fill all fields");
+    return;
+  }
+
+  this.myApiService.forgetPassword(this.forgotData).subscribe({
+    next: (res) => {
+      alert("Password updated successfully");
+      this.closeForgotModal();
+    },
+    error: (err) => {
+      console.error(err);
+      alert("Failed to reset password");
     }
   });
 }

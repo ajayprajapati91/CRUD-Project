@@ -15,7 +15,7 @@ type ToastKind = 'success' | 'error';
 })
 export class DashboardComponent implements OnInit {
   myRoute = inject(Router)
-
+ users: CrudUser[] = [];
   records: CrudUser[] = [];
 
   viewMode: 'all' | 'byId' | null = null;
@@ -51,8 +51,14 @@ export class DashboardComponent implements OnInit {
   toastKind: ToastKind = 'success';
   private toastTimer: number | undefined;
   myStorage=inject(StorageServices)
-  
 
+  currentPage = 1;
+  itemsPerPage = 5;
+  
+get paginatedRecords() {
+  const start = (this.currentPage - 1) * this.itemsPerPage;
+  return this.records.slice(start, start + this.itemsPerPage);
+}
   constructor(
     private readonly userCrud: UserCrudService,
     private readonly auth: AuthService
@@ -77,6 +83,8 @@ export class DashboardComponent implements OnInit {
       this.toastText = '';
     }, 2800);
   }
+
+
 
   getAll(): void {
     this.userCrud.getAll().subscribe({
@@ -158,49 +166,28 @@ export class DashboardComponent implements OnInit {
     this.updateTarget = null;
   }
 
-  // saveUpdate(): void {
-  //   if (!this.updateTarget) return;
 
-  //   const patch: UpdateUserDto = {
-  //     // fullName: this.updateDraft.fullName,
-  //     // email: this.updateDraft.email,
-  //     // phone: this.updateDraft.phone,
-  //     // gender: this.updateDraft.gender,
-  //     // city: this.updateDraft.city,
-  //   };
+  downloadReport(): void {
+  this.userCrud.downloadReport().subscribe({
+    next: (blob: Blob) => {
+      const fileURL = window.URL.createObjectURL(blob);
 
-  // if (this.updateDraft.fullName !== this.updateTarget.fullName) patch.fullName = this.updateDraft.fullName;
-  // if (this.updateDraft.email !== this.updateTarget.email) patch.email = this.updateDraft.email;
-  // if (this.updateDraft.phone !== this.updateTarget.phone) patch.phone = this.updateDraft.phone;
-  // if (this.updateDraft.gender !== this.updateTarget.gender) patch.gender = this.updateDraft.gender;
-  // if (this.updateDraft.city !== this.updateTarget.city) patch.city = this.updateDraft.city;
+      const a = document.createElement('a');
+      a.href = fileURL;
+      a.download = 'User_Report.xlsx'; // file name
+      a.click();
 
-  //   const password = this.updateDraft.password.trim();
-  //   if (password) {
-  //     patch.password = password;
-  //   }
-  //   console.log('Sending update payload:', patch);
+      window.URL.revokeObjectURL(fileURL);
 
-  //   this.userCrud.updateById(this.updateTarget.id, patch).subscribe({
-  //     next: (updated) => {
-  //       console.log('Backend updated response:', updated)
-  //       this.showUpdateModal = false;
-  //       this.updateTarget = null;
+      this.showToast('Report downloaded successfully.', 'success');
+    },
+    error: (err) => {
+      console.error(err);
+      this.showToast('Failed to download report.', 'error');
+    }
+  });
+}
 
-  //        this.getAll();
-
-  //       // const idx = this.records.findIndex((r) => r.id === updated.id);
-  //       // if (idx >= 0) this.records[idx] = updated;
-  //       // else this.records = [updated];
-
-  //       this.showToast('Record updated successfully.', 'success');
-  //     },
-  //     error: (err: unknown) => {
-  //       const msg = err instanceof Error ? err.message : 'Update failed.';
-  //       this.showToast(msg, 'error');
-  //     },
-  //   });
-  // }
 
  saveUpdate(): void {
   if (!this.updateTarget) return;
@@ -247,23 +234,35 @@ export class DashboardComponent implements OnInit {
     this.deleteTarget = null;
   }
 
+
   confirmDelete(): void {
-    if (!this.deleteTarget) return;
-    const id = this.deleteTarget.id;
+  if (!this.deleteTarget) return;
 
-    this.userCrud.deleteById(id).subscribe({
-      next: (deleted) => {
-        this.showDeleteModal = false;
-        this.deleteTarget = null;
+  this.userCrud.deleteById(this.deleteTarget.id).subscribe({
+    next: (res) => {
+      console.log(res);
+      alert("User successfully deleted")
 
-        if (deleted) {
-          this.records = this.records.filter((r) => r.id !== id);
-          this.showToast(`Deleted record ID ${id}.`, 'success');
-        } else {
-          this.showToast('Delete failed: record not found.', 'error');
-        }
-      },
-      error: () => this.showToast('Delete failed.', 'error'),
-    });
-  }
+      // Remove from the array used by the table
+      this.records = this.records.filter(u => u.id !== this.deleteTarget?.id);
+
+      // Adjust page if current page becomes empty
+      const maxPage = Math.ceil(this.records.length / this.itemsPerPage);
+      if (this.currentPage > maxPage && maxPage > 0) {
+        this.currentPage = maxPage;
+      }
+
+      // Close modal
+      this.showDeleteModal = false;
+      this.deleteTarget = null;
+
+      // Optional toast message
+      this.showToast('User deleted successfully.', 'success');
+    },
+    error: (err) => {
+      console.error('Delete failed', err);
+      this.showToast('Failed to delete user.', 'error');
+    }
+  });
+}
 }

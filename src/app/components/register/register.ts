@@ -42,7 +42,7 @@ export class RegisterComponent {
   confirmPassword = '';
   cityOptions: string[] = ['Delhi', 'Mumbai', 'Bengaluru', 'Pune', 'Hyderabad', 'Chennai', 'Kolkata'];
   role='';
-  roleOptions:string[] =['ADMIN','DONOR','HOSPITAL','DONATION'];
+  roleOptions:string[] =['ADMIN','DONOR','HOSPITAL'];
 
   errorMessage = '';
   successMessage = '';
@@ -92,7 +92,10 @@ export class RegisterComponent {
     })
     .subscribe({
       next: (user) => { 
-        //
+       
+        console.log("registerd")
+         this.successMessage = 'Registration successful. Please login.';
+        
         // Save user info in localStorage
     localStorage.setItem('currentUser', JSON.stringify({
       fullName: user.fullName,
@@ -100,9 +103,9 @@ export class RegisterComponent {
     }));
     //
         this.submitting = false;
-        this.successMessage = 'Registration successful. Please login.';
+         alert('Registered successfully');
         this.router.navigate(['/login']);
-        console.log("registerd")
+        
       },
       error: (err: unknown) => {
         this.submitting = false;

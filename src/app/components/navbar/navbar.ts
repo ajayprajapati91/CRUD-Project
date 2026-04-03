@@ -1,43 +1,12 @@
-import { Component, OnInit  } from '@angular/core';
-import { AuthService } from '../../services/auth.service';
-import { Router, NavigationEnd } from '@angular/router';
+import { Component  } from '@angular/core';
+
 @Component({
   selector: 'app-navbar',
   standalone: false,
   templateUrl: './navbar.html',
   styleUrl: './navbar.css',
 })
-export class Navbar implements OnInit{
-   loggedInEmail: string | null = null;
-  isLoggedIn: boolean = false;
-  title = 'CRUDProject';
+export class Navbar {
   
-   constructor(
-      private readonly auth: AuthService,
-      private router: Router
-    ) {}
-  
-    ngOnInit(): void {
-        this.router.events.subscribe(event => {
-      if (event instanceof NavigationEnd) {
-        const user = JSON.parse(localStorage.getItem('currentUser') || 'null');
-        this.isLoggedIn = !!user;
-        this.loggedInEmail = user?.email || null;
-      // this.loggedInEmail = this.auth.getLoggedInEmail();
-      // this.isLoggedIn = this.auth.isLoggedIn();
-
-     }
-    });
-  }
-
-   logout() {
-    // Remove user from localStorage or service
-    localStorage.removeItem('currentUser');
-    this.isLoggedIn = false;
-    this.loggedInEmail = null;
-    this.router.navigate(['/login']);
-  }
-
-
 
 }

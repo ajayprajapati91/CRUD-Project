@@ -59,6 +59,12 @@ export class UserCrudService {
     return false
   }
 
+  forgetPassword(data: { email: string; password: string }) {
+  return this.http.post(`${this.baseUrl}/forget`, data, {
+    responseType: 'text'
+  });
+}
+
   // getDashboardData(){
   //   return this.http.get(this.baseUrl+'/dashboard')
   // }
@@ -79,14 +85,20 @@ export class UserCrudService {
   const payload = { ...dto };
   if (!payload.password) delete payload.password;
 
-  return this.http.patch(`${this.baseUrl}/${id}`, payload);
+  return this.http.put(`${this.baseUrl}/${id}`, payload);
 }
 
   deleteById(id: number): Observable<any> {
-    return this.http.delete(`${this.baseUrl}/${id}`);
+    return this.http.delete(`${this.baseUrl}/${id}`, { responseType: 'text' });
   }
 
   deleteAll(): Observable<any[]> {
     return this.http.delete<any[]>(`${this.baseUrl}/delete-all`);
   }
+
+  downloadReport() {
+  return this.http.get(`${this.baseUrl}/reports`, {
+    responseType: 'blob' // VERY IMPORTANT
+  });
+}
 }

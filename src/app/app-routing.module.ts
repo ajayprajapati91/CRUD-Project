@@ -10,6 +10,8 @@ import { Home } from './components/home/home';
 import { ErrorPage } from './components/error-page/error-page';
 import { Profile } from './components/profile/profile';
 import { authguardGuard } from './guards/authguard-guard';
+import { Donor } from './components/donor/donor';
+import { Hospital } from './components/hospital/hospital';
 
 
 const routes: Routes = [
@@ -31,14 +33,29 @@ const routes: Routes = [
     path: 'dashboard',
     component: DashboardComponent,
     canActivate: [authguardGuard],
-    data: { role: 'ADMIN'}
-    // children:[
-    //   {
-    //     path: 'profile',
-    //     component:Profile
-    //   }
-    // ]
+    data: { role: 'ADMIN'},
+    children: [
+      { path: 'profile/:id', component: Profile} 
+    ]
   },
+  {
+  path: 'dashboard',
+  component: DashboardComponent,
+  canActivate: [authguardGuard],
+  data: { role: 'ADMIN' }  // only ADMIN can access
+},
+{
+  path: 'hospital',
+  component: Hospital,
+  canActivate: [authguardGuard],
+  data: { role: 'HOSPITAL' }  // only HOSPITAL can access
+},
+{
+  path: 'donor',
+  component: Donor,
+  canActivate: [authguardGuard],
+  data: { role: 'DONOR' }  // only DONOR can access
+},
  
   // { path: 'dashboard', component: DashboardComponent },
   { path: '**', component: ErrorPage},

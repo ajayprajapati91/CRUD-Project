@@ -17,7 +17,7 @@
         />
       </label>
       
-      <div class="error" *ngIf="formControl.email.touched && formControl.email.invalid">
+      <div class="alert alert-danger" *ngIf="formControl.email.touched && formControl.email.invalid">
         <small *ngIf="formControl.email.errors?.['required']">
           Email is required
         </small>
@@ -36,10 +36,16 @@
         />
       </label>
 
-      <!-- ✅ Validation Message -->
-      <div class="error" *ngIf="formControl.password.touched && formControl.password.invalid">
+      
+      <div class="alert alert-danger" *ngIf="formControl.password.touched && formControl.password.invalid">
         <small>Password is required</small>
       </div>
+
+      <div class="links">
+  <button type="button" class="link-btn" (click)="openForgotModal()">
+    Forgot Password?
+  </button>
+</div>
 
       <button
         class="btn"
@@ -60,5 +66,22 @@
       </div>
 
     </form>
+  </div>
+</div>
+
+<div *ngIf="showForgotModal" class="forgot-modal-backdrop">
+  <div class="forgot-modal-card">
+    <h3>Forgot Password</h3>
+
+    <label>Email</label>
+    <input type="email" [(ngModel)]="forgotData.email" placeholder="Enter your email" />
+
+    <label>New Password</label>
+    <input type="password" [(ngModel)]="forgotData.password" placeholder="Enter new password" />
+
+    <div class="forgot-modal-buttons">
+      <button (click)="submitForgotPassword()">Reset Password</button>
+      <button (click)="closeForgotModal()">Cancel</button>
+    </div>
   </div>
 </div>

@@ -1,13 +1,13 @@
 <div class="dash-shell">
 <header class="topbar">
   <div class="brand">
-    <div class="brand-mark">🩸</div>
+    <!-- <div class="brand-mark">MyApp</div> -->
     <div class="brand-text">Admin Dashboard</div>
   </div>
 
   <div class="top-actions">
     <!-- <div class="user-email" *ngIf="getToken" routerLink="/dashboard/profile">{{ loggedInEmail }}</div> -->
-    <button class="profile-btn" type="button" (click)="getById()"> 👤 Profile</button>
+    <!-- <button class="profile-btn" type="button" (click)="showProfile()">👤 Profile</button> -->
     <button class="logout-btn" type="button" (click)="logout()">Logout</button>
   </div>
 </header>
@@ -21,6 +21,7 @@
     </div>
 
     <div class="side-section">
+      
       <div class="side-label">Get By Id</div>
       <div class="side-input-row">
         <input class="side-input" type="number" min="1" placeholder="Enter id" [(ngModel)]="idInput" name="idInput" />
@@ -31,6 +32,25 @@
     <div class="side-section">
       <button class="side-btn danger" type="button" (click)="deleteAll()">Delete All</button>
     </div>
+
+    <div class="side-section">
+  <button class="side-btn" type="button" (click)="downloadReport()">
+    📥 Download User Report
+  </button>
+  <div class="pagination">
+  <button (click)="currentPage = currentPage - 1" [disabled]="currentPage === 1">
+    Prev
+  </button>
+
+  <span>Page {{ currentPage }}</span>
+
+  <button 
+    (click)="currentPage = currentPage + 1"
+    [disabled]="currentPage * itemsPerPage >= records.length">
+    Next
+  </button>
+</div>
+</div>
 
     <div class="side-footer">
       <div class="side-hint" *ngIf="viewMode">
@@ -47,7 +67,7 @@
         <div class="panel-subtitle" *ngIf="records.length">Total: {{ records.length }}</div>
       </div>
 
-      <div class="ctable-wrap" *ngIf="records.length; else emptyState">
+      <div class="ctable-wrap" *ngIf="paginatedRecords.length; else emptyState">
         <table class="ctable">
           <thead>
             <tr>
@@ -57,17 +77,19 @@
               <th class="col-phone">Phone</th>
               <th class="col-gender">Gender</th>
               <th class="col-city">City</th>
+              <th class="col-city">Role</th>
               <th class="col-actions">Actions</th>
             </tr>
           </thead>
           <tbody>
-            <tr *ngFor="let user of records ;index as i" (click)='profileDetails(user.id)'>
+            <tr *ngFor="let user of paginatedRecords ;index as i" (click)='profileDetails(user.id)'>
               <td>{{ user.id }}</td>
               <td>{{ user.fullName }}</td>
               <td>{{ user.email }}</td>
               <td>{{ user.phone }}</td>
               <td>{{ user.gender }}</td>
               <td>{{ user.city }}</td>
+              <td>{{ user.role }}</td>
               <td>
                 <button class="action-btn" type="button" (click)="openUpdate(user); $event.stopPropagation()">Update</button>
                 <button class="action-btn danger" type="button" (click)="openDelete(user); $event.stopPropagation()">Delete</button>
@@ -84,8 +106,11 @@
         </div>
       </ng-template>
     </section>
+    
   </main>
 </div>
+
+
 
 <div class="cmodal-backdrop" *ngIf="showUpdateModal" (click)="cancelUpdate()">
   <div class="cmodal" (click)="$event.stopPropagation()">
@@ -157,3 +182,17 @@
   [class.toast-error]="toastKind === 'error'">
   {{ toastText }}
 </div>
+
+
+<div *ngIf="showDeleteModal" class="delete-modal-backdrop">
+  <div class="delete-modal-card">
+    <h4>Confirm Delete</h4>
+    <p>Are you sure you want to delete {{ deleteTarget?.fullName }}?</p>
+    <div class="buttons">
+      <button class="btn btn-danger" (click)="confirmDelete()">Delete</button>
+      <button class="btn btn-secondary" (click)="cancelDelete()">Cancel</button>
+    </div>
+  </div>
+</div>
+
+

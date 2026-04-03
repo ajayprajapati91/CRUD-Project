@@ -6,6 +6,8 @@ export const authguardGuard: CanActivateFn = (route, state) => {
   const myStorage=inject(StorageServices)
   const myRouter = inject(Router)
   const token= myStorage.getItem('authToken')
+  const role = myStorage.getUserRole();
+  const expectedRole = route.data?.['role'];
 
   if(token){
     return true
@@ -14,13 +16,11 @@ export const authguardGuard: CanActivateFn = (route, state) => {
   myRouter.navigate(['/login'])
   return false
 
-//     const requiredRole=route.data?.['role'];
-//   const userRole = myStorage.getUserRole();
-
-//  if (requiredRole && userRole !== requiredRole) {
-//     myRouter.navigate(['/unauthorized']); // create this page
-//     return false;
-//   }
-
-//  return true;
+if(role!==expectedRole)
+  {
+     myRouter.navigate(['/unauthorized'])
+    return false;
+  }
+  return true;
+ 
 };
